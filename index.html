@@ -140,54 +140,54 @@
             });
 
             $("#add-item").keypress(function(e) {
-                if (e.which == 13) {
-                    var value = $("#add-item").val();
-                    switch (value) {
-                        case "Delete next":
+                    if (e.which == 13) {
+                        var value = $("#add-item").val();
+                        if (value.indexOf("Delete next") > -1) {
                             $("#add-item").val("D")
                             $("#add-item").focus();
-                            break;
-                        case "X2 Next":
+                        }
+                        else if (value.indexOf("X2 Next") > -1) {
                             $("#add-item").val("2X")
                             $("#add-item").focus();
-                            break;
-                        case "X3 Next":
+                        }
+                        else if (value.indexOf("X3 Next") > -1) {
                             $("#add-item").val("3X")
                             $("#add-item").focus();
-                            break;
-                        case "X4 Next":
+                        }
+                        else if (value.indexOf("X4 Next") > -1) {
                             $("#add-item").val("4X")
                             $("#add-item").focus();
-                            break;
-                        case "X5 Next":
+                        }
+                        else if (value.indexOf("X5 Next") > -1) {
                             $("#add-item").val("5X")
                             $("#add-item").focus();
-                            break;
-                        case "Clear Formatters":
+                        }
+                        else if (value.indexOf("Clear Formatters") > -1) {
                             $("#add-item").val("")
                             $("#add-item").focus();
-                            break;
-                        case "Exact Change Paid":
+                        }
+                        else if (value.indexOf("Exact Change Paid") > -1) {
                             //EXACT CHANGE PAID TODO
-                            break;
-                        case "Reset POS":
+                        }
+                        else if (value.indexOf("Reset POS") > -1) {
                             $("#add-item").val("Reset POS")
                             $("#add-item").focus();
-                            break;
-                        case "Reset POSConfirm":
+                        }
+                        else if (value.indexOf("Reset POSConfirm") > -1) {
                             //RESET POS TODO
-                            break;
-                        default:
+                        }
+                        else {
                             alert(value);
                             $("#add-item").val("")
                             $("#add-item").focus();
+                        }
                     }
 
 
                 }
 
 
-            });
+            );
         </script>
 
 </body>
