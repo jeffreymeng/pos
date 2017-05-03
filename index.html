@@ -135,7 +135,10 @@
     
     $("#add-item").keypress(function(e) {
     if(e.which == 13) {
+        
         alert($("#add-item").val());
+        $("#add-item").val("")
+        $("#add-item").focus();
     }
 });
     </script>
