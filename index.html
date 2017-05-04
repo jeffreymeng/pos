@@ -236,7 +236,7 @@ if (items[key] === null) {
                         }
                         else {
                             //alert(value);
-                            if (order[value] !== null) {
+                            if (order[value] !== undefined && order[value] !== null) {
                                 order[value] = order[value] + 1;
                             }
                             else {
