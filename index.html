@@ -163,13 +163,12 @@
                 var unitprice, totalprice, qty, name, first = true;
                 for (var key in order) {
                     if (order.hasOwnProperty(key)) {
-
-                        qty = order[key];
-                        console.log(key + " -> " + qty);
-                        if (items[key] === null) {
+if (items[key] === null) {
                             console.log("Item " + key + " was ignored because it does not exist in the items object.");
                         }
                         else {
+                        qty = order[key];
+
                             unitprice = items[key].price;
                             name = items[key].name;
                             totalprice = unitprice * qty;
@@ -238,7 +237,7 @@
                         else {
                             //alert(value);
                             if (order[value] !== null) {
-                                order[value] = (parseInt(order[value]) + 1).toString();
+                                order[value] = order[value] + 1;
                             }
                             else {
                                 order[value] = 1;
