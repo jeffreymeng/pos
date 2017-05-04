@@ -178,7 +178,8 @@
                         }
                         
                         if ($( "#item-" + key).length) {
-                            
+                            $("#item-" + key + "-qty").html(qty);
+                            $("#item-" + key + "-totalprice").html(totalprice);
                         } else {
                             $("#items").append("<tr id='item-" + key + "'><td id='item-" + key + "-name'>" + name + "</td>" + 
                             "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + unitprice + "</td>" +
