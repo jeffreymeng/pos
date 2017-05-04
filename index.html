@@ -132,57 +132,61 @@
         <!-- Menu Toggle Script -->
         <script>
             /*
-                                My Plan:
-                                Use firebase to styore realtime operations in the cloud
-                                I edit store details on computer,
-                                the shoopper can only see they table, displayed on an ipad.
-                                The shopper should be able to get print and pdf recciepts
-                                coupons accepted
-                                FUTURE: Credir card/gift card? (Fake)
-                                FUTURE: add new itesm via fcifrebase
-                                once an item is scanned, upate an objkect, then update the table to match that object. Ex object:
-                                00289371: {
-                                    name:"hazelnuts",
-                                    price: 3.000,
-                                    
-                                    
-                                }
-                                */
+                                                        My Plan:
+                                                        Use firebase to styore realtime operations in the cloud
+                                                        I edit store details on computer,
+                                                        the shoopper can only see they table, displayed on an ipad.
+                                                        The shopper should be able to get print and pdf recciepts
+                                                        coupons accepted
+                                                        FUTURE: Credir card/gift card? (Fake)
+                                                        FUTURE: add new itesm via fcifrebase
+                                                        once an item is scanned, upate an objkect, then update the table to match that object. Ex object:
+                                                        00289371: {
+                                                            name:"hazelnuts",
+                                                            price: 3.000,
+                                                            
+                                                            
+                                                        }
+                                                        */
             /*global $ */
             var items = {
-                0001: {
-                    name: "hazelnuts",
-                    price: 3.25
+                "00947633": {
+                    name: "Oregon Hazelnuts",
+                    price: 1.99
                 }
             };
+            var order = {};
 
             function updateTable() {
-                var order = {
-                    0001: 2
-                };
 
-                var val, unitprice, totalprice, qty, name, first = true;
+
+                var unitprice, totalprice, qty, name, first = true;
                 for (var key in order) {
                     if (order.hasOwnProperty(key)) {
 
                         qty = order[key];
                         console.log(key + " -> " + qty);
-                        unitprice = items[key].price;
-                        name = items[key].name;
-                        totalprice = unitprice * qty;
-                        if (first) {
-                            $("#noitems").addClass("hidden");
-                            first = false;
-                        }
-
-                        if ($("#item-" + key).length) {
-                            $("#item-" + key + "-qty").html(qty);
-                            $("#item-" + key + "-totalprice").html(totalprice);
+                        if (items[key] === null) {
+                            console.log("Item " + key + " was ignored because it does not exist in the items object.");
                         }
                         else {
-                            $("<tr id='item-" + key + "'><td id='item-" + key + "-name'>" + name + "</td>" +
-                                "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + unitprice + "</td>" +
-                                "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
+                            unitprice = items[key].price;
+                            name = items[key].name;
+                            totalprice = unitprice * qty;
+                            if (first) {
+                                $("#noitems").addClass("hidden");
+                                first = false;
+                            }
+
+                            if ($("#item-" + key).length) {
+                                $("#item-" + key + "-qty").html(qty);
+                                $("#item-" + key + "-totalprice").html(totalprice);
+                            }
+                            else {
+                                $("<tr id='item-" + key + "'><td id='item-" + key + "-name'>" + name + "</td>" +
+                                    "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + unitprice + "</td>" +
+                                    "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
+                            }
                         }
                     }
                 }
@@ -228,13 +232,21 @@
                         }
                         else if (value.indexOf("Reset POSConfirm") > -1) {
                             //RESET POS TODO
-                            order = null;
+                            order = {};
                             updateTable();
                         }
                         else {
-                            alert(value);
+                            //alert(value);
+                            if (order[value] !== null) {
+                                order[value] = (parseInt(order[value]) + 1).toString();
+                            }
+                            else {
+                                order[value] = 1;
+                            }
+
                             $("#add-item").val("");
                             $("#add-item").focus();
+                            updateTable();
                         }
                     }
 
