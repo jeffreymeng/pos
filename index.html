@@ -180,9 +180,9 @@
                         if ($( "#item-" + key).length) {
                             
                         } else {
-                            $("#items").append("<tr id='" + key + "'><td id='" + key + "-name'>" + name + "</td>" + 
-                            "<td id='" + key + "-qty'>" + qty + "</td><td id='" + key + "-unitprice'>$" + unitprice + "</td>" +
-                            "<td id='" + key + "-totalprice'>$" + totalprice + "</td></tr>");
+                            $("#items").append("<tr id='item-" + key + "'><td id='item-" + key + "-name'>" + name + "</td>" + 
+                            "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + unitprice + "</td>" +
+                            "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>");
                         }
                     }
                 }
