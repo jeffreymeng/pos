@@ -153,6 +153,24 @@
                 "00947633": {
                     name: "Oregon Hazelnuts",
                     price: 1.99
+                },
+                "02297309":{
+                    name:"Altoid Smalls - Peppermint",
+                    price:0.99
+                },
+                
+                "02297406":{
+                    name:"Altoid Smalls - Wintergreen",
+                    price: 0.99
+                },
+                
+                "00389624":{
+                    name:"Jeffrey Water - 9 Pack water certificate",
+                    price: 3.99
+                },
+                "009800800056":{
+                    name:"Nutella and Go",
+                    price:0.99
                 }
             };
             var order = {};
@@ -168,7 +186,9 @@ if (items[key] === null) {
                         }
                         else {
                         qty = order[key];
-
+                        if (qty <= 0) {
+                            continue;
+                        }
                             unitprice = items[key].price;
                             name = items[key].name;
                             totalprice = unitprice * qty;
@@ -234,6 +254,33 @@ if (items[key] === null) {
                             order = {};
                             updateTable();
                         }
+                        else if (value.indexOf("D") === 0) {
+                            if (order[value.substring(1)] !== 1 && order[value.substring(1)] !== 1) {
+                                order[value] = order[value] - 1;
+                            }
+                            else {
+                                order[value] = undefined;
+                            }
+
+                            $("#add-item").val("");
+                            $("#add-item").focus();
+                            updateTable();
+                        }
+                         /*else if (value.indexOf("X") > -1) {
+                             
+
+                            if (order[value] !== undefined && order[value] !== null) {
+                                order[value] = order[value] + 2;
+                            }
+                            else {
+                                order[value] = 2;
+                            }
+
+                            $("#add-item").val("");
+                            $("#add-item").focus();
+                            updateTable();
+                        }
+                        */
                         else {
                             //alert(value);
                             if (order[value] !== undefined && order[value] !== null) {
