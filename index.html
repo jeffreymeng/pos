@@ -87,9 +87,9 @@
                                         <th>Unit Price</th>
                                         <th>Total Price</th>
                                     </tr>
-                                        <tr>
-                                            <th colspan="4" id="noitems">No items</th>
-                                        </tr>
+                                    <tr id="noitems">
+                                        <th colspan="4">No items</th>
+                                    </tr>
                                     <tr>
                                         <th colspan="3"><span class="pull-right">Subtotal</span></th>
                                         <th id="subtottal">$0.00</th>
@@ -132,22 +132,22 @@
         <!-- Menu Toggle Script -->
         <script>
             /*
-                    My Plan:
-                    Use firebase to styore realtime operations in the cloud
-                    I edit store details on computer,
-                    the shoopper can only see they table, displayed on an ipad.
-                    The shopper should be able to get print and pdf recciepts
-                    coupons accepted
-                    FUTURE: Credir card/gift card? (Fake)
-                    FUTURE: add new itesm via fcifrebase
-                    once an item is scanned, upate an objkect, then update the table to match that object. Ex object:
-                    00289371: {
-                        name:"hazelnuts",
-                        price: 3.000,
-                        
-                        
-                    }
-                    */
+                                My Plan:
+                                Use firebase to styore realtime operations in the cloud
+                                I edit store details on computer,
+                                the shoopper can only see they table, displayed on an ipad.
+                                The shopper should be able to get print and pdf recciepts
+                                coupons accepted
+                                FUTURE: Credir card/gift card? (Fake)
+                                FUTURE: add new itesm via fcifrebase
+                                once an item is scanned, upate an objkect, then update the table to match that object. Ex object:
+                                00289371: {
+                                    name:"hazelnuts",
+                                    price: 3.000,
+                                    
+                                    
+                                }
+                                */
             /*global $ */
             var items = {
                 0001: {
@@ -160,11 +160,11 @@
                 var order = {
                     0001: 2
                 };
-                
+
                 var val, unitprice, totalprice, qty, name, first = true;
                 for (var key in order) {
                     if (order.hasOwnProperty(key)) {
-                        
+
                         qty = order[key];
                         console.log(key + " -> " + qty);
                         unitprice = items[key].price;
@@ -174,14 +174,15 @@
                             $("#noitems").addClass("hidden");
                             first = false;
                         }
-                        
-                        if ($( "#item-" + key).length) {
+
+                        if ($("#item-" + key).length) {
                             $("#item-" + key + "-qty").html(qty);
                             $("#item-" + key + "-totalprice").html(totalprice);
-                        } else {
-                            $("<tr id='item-" + key + "'><td id='item-" + key + "-name'>" + name + "</td>" + 
-                            "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + unitprice + "</td>" +
-                            "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
+                        }
+                        else {
+                            $("<tr id='item-" + key + "'><td id='item-" + key + "-name'>" + name + "</td>" +
+                                "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + unitprice + "</td>" +
+                                "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
                         }
                     }
                 }
