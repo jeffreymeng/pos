@@ -191,6 +191,7 @@
                     }
                 }
                 $("#subtotal").html(subtotal);
+                $("#total").html(subtotal);
                 if (order !== undefined && order !== null) {
                     if (order.paid !== undefined && order.paid !== null) {
                         remaining = order.paid;
@@ -246,6 +247,8 @@
                             ref.ref("/order/subtotal/").once("value").then(function(snapshot) {
                                 ref.ref("/order/paid/").set(snapshot.val());
                             });
+                            $("#add-item").val("");
+                            $("#add-item").focus();
                         }
                         else if (value.indexOf("Reset POS") > -1) {
                             $("#add-item").val("Reset POS");
@@ -254,6 +257,9 @@
                         else if (value.indexOf("Reset POSConfirm") > -1) {
                             //RESET POS TODO
                             firebase.database().ref("/order/").set(null);
+                            $("#noitems").removeClass("hidden");
+                            $("#add-item").val("");
+                            $("#add-item").focus();
                         }
                         else if (value.indexOf("D") === 0) {
                             ref.ref("/order/" + value.substring(1)).transaction(function(snapshot) {
