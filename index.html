@@ -209,7 +209,7 @@
                 return subtottal;
             }
 
-            ref.on("value", function(snapshot) {
+            ref.ref("/").on("value", function(snapshot) {
                 console.log(snapshot);
                 if (snapshot.val().order === null || snapshot.val().order === undefined) {
                     return;
