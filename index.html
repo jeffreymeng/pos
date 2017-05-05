@@ -158,7 +158,7 @@
                     $(".item").remove();
                 for (var key in order) {
                     if (order.hasOwnProperty(key)) {
-                        if (items[key] === null) {
+                        if (items[key] === null || items[key] === undefined) {
                             console.log("Item " + key + " was ignored because it does not exist in the items object.");
                         }
                         else {
