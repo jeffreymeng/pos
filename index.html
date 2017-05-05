@@ -41,7 +41,7 @@
                 <li>
                     <a href="/">Home</a>
                 </li>
-                
+
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -125,7 +125,7 @@
         </script>
         <!-- Menu Toggle Script -->
         <script>
-        $("#menu-toggle").click(function(e) {
+            $("#menu-toggle").click(function(e) {
                 e.preventDefault();
                 $("#wrapper").toggleClass("toggled");
             });
@@ -155,11 +155,15 @@
 
                 var unitprice, totalprice, qty, name, first = true,
                     subtottal = 0;
-                    $(".item").remove();
+                $(".item").remove();
                 for (var key in order) {
                     if (order.hasOwnProperty(key)) {
-                        if (items[key] === null || items[key] === undefined) {
+                        if (items[key] === "subtottal" || items[key] === "paid") {
+                            continue;
+                        }
+                        else if (items[key] === null || items[key] === undefined) {
                             console.log("Item " + key + " was ignored because it does not exist in the items object.");
+                            continue;
                         }
                         else {
                             qty = order[key];
@@ -176,17 +180,17 @@
                                 first = false;
                             }
 
-                            
-                                $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + "</td>" +
-                                    "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + unitprice + "</td>" +
-                                    "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
 
-                            
+                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + "</td>" +
+                                "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + unitprice + "</td>" +
+                                "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
+
+
                         }
                     }
                 }
                 $("#subtottal").html(subtottal);
-                
+
                 return subtottal;
             }
 
@@ -199,7 +203,7 @@
                     ref.ref("/order/subtottal").set(updateTable(snapshot.val().items, snapshot.val().order));
                 }
             });
-            
+
 
             $("#add-item").keypress(function(e) {
                     if (e.which == 13) {
@@ -231,7 +235,7 @@
                             $("#add-item").focus();
                         }
                         else if (value.indexOf("Exact Change Paid") > -1) {
-                            ref.ref("/order/subtottal/").once("value").then(function(snapshot){
+                            ref.ref("/order/subtottal/").once("value").then(function(snapshot) {
                                 ref.ref("/order/paid/").set(snapshot.val());
                             });
                         }
