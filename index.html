@@ -297,11 +297,11 @@
                         else {
                             //alert(value);
                             ref.ref("/order/" + value).transaction(function(snapshot) {
-                                if (snapshot.val() !== undefined && snapshot.val !== null) {
+                                if (snapshot !== undefined && snapshot !== null) {
                                     $("#add-item").val("");
                                     $("#add-item").focus();
                                     updateTable();
-                                    return snapshot.val() + 1;
+                                    return snapshot + 1;
                                 }
                                 else {
                                     $("#add-item").val("");
