@@ -180,7 +180,7 @@
                                 $("#noitems").addClass("hidden");
                                 first = false;
                             }
-
+                            
 
                             $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + "</td>" +
                                 "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + unitprice + "</td>" +
@@ -277,6 +277,11 @@
 
                                 $("#add-item").val("");
                                 $("#add-item").focus();
+                            });
+                        }
+                        else if (value.indexOf("M") === 0) {
+                            ref.ref("/order/paid/").transaction(function(snapshot) {
+                                return snapshot + roundTo(parseInt(value.substring(1)), 2);
                             });
                         }
                         /*else if (value.indexOf("X") > -1) {
