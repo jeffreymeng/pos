@@ -207,13 +207,13 @@
                 return subtottal;
             }
 
-            ref.transaction(function(snapshot) {
+            ref.on("value").then(function(snapshot) {
                 console.log(snapshot);
                 if (snapshot.order === null || snapshot.order === undefined) {
-                    return snapshot;
+                    return;
                 }
                 else {
-                    return updateTable(snapshot.items, snapshot.order);
+                    ref.ref("/order/subtottal").set(updateTable(snapshot.items, snapshot.order));
                 }
             });
             $("#menu-toggle").click(function(e) {
