@@ -208,6 +208,7 @@
             }
 
             ref.transaction(function(snapshot) {
+                console.log(snapshot);
                 if (snapshot.order === null || snapshot.order === undefined) {
                     return snapshot;
                 }
