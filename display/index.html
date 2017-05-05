@@ -111,14 +111,16 @@
         <!-- Menu Toggle Script -->
         <script>
             /*
-                                                                        TODO:
-                                                                        Add new items via firebase
-                                                                        Create accounts
-                                                                        Accept Gift cards
-                                                                                                                                                        */
+                                                                                    TODO:
+                                                                                    Add new items via firebase
+                                                                                    Create accounts
+                                                                                    Accept Gift cards
+                                                                                                                                                                    */
             /*global $ firebase*/
 
             //http://stackoverflow.com/a/15762794/5511561
+
+
             var ref = firebase.database();
 
             function roundTo(n, digits) {
@@ -172,6 +174,7 @@
                     }
                 }
                 $("#subtotal").html(subtotal);
+                $("#total").html(subtotal);
                 if (order !== undefined && order !== null) {
                     console.log(order.paid);
                     if (order.paid !== undefined && order.paid !== null) {
@@ -185,7 +188,9 @@
                 else {
                     console.log(10);
                 }
-                $("remaining").html(remaining);
+
+
+                $("#remaining").html(remaining);
                 return subtotal;
             }
 
