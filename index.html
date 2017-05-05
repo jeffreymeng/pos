@@ -211,11 +211,11 @@
 
             ref.on("value", function(snapshot) {
                 console.log(snapshot);
-                if (snapshot.order === null || snapshot.order === undefined) {
+                if (snapshot.val().order === null || snapshot.val().order === undefined) {
                     return;
                 }
                 else {
-                    ref.ref("/order/subtottal").set(updateTable(snapshot.items, snapshot.order));
+                    ref.ref("/order/subtottal").set(updateTable(snapshot.val().items, snapshot.val().order));
                 }
             });
             
