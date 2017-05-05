@@ -145,11 +145,11 @@
         <!-- Menu Toggle Script -->
         <script>
             /*
-                                                TODO:
-                                                Add new items via firebase
-                                                Create accounts
-                                                Accept Gift cards
-                                                                                                                                */
+                                                            TODO:
+                                                            Add new items via firebase
+                                                            Create accounts
+                                                            Accept Gift cards
+                                                                                                                                            */
             /*global $ firebase*/
 
             //http://stackoverflow.com/a/15762794/5511561
@@ -208,7 +208,12 @@
             }
 
             ref.transaction(function(snapshot) {
-                return updateTable(snapshot.items, snapshot.order);
+                if (snapshot.order === null || snapshot.order === undefined) {
+                    return snapshot;
+                }
+                else {
+                    return updateTable(snapshot.items, snapshot.order);
+                }
             });
             $("#menu-toggle").click(function(e) {
                 e.preventDefault();
