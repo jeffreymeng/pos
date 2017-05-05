@@ -190,7 +190,14 @@
                     }
                 }
                 $("#subtotal").html(subtotal);
-                $("remaining").html(subtotal - (order.paid || 0.00));
+                if (order !== undefined && order !== null) {
+                    if (order.paid !== undefined && order.paid !== null) {
+                        remaining = order.paid;
+                    } else {
+                        remaining = 0.00;
+                    }
+                }
+                $("remaining").html(remaining);
                 return subtotal;
             }
 
