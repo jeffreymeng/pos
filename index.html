@@ -154,11 +154,11 @@
             function updateTable(items, order) {
                 
                 var unitprice, totalprice, qty, name, first = true,
-                    subtottal = 0;
+                    subtotal = 0;
                 $(".item").remove();
                 for (var key in order) {
                     if (order.hasOwnProperty(key)) {
-                        if (items[key] === "subtottal" || items[key] === "paid") {
+                        if (key === "subtotal" || key === "paid") {
                             continue;
                         }
                         else if (items[key] === null || items[key] === undefined) {
@@ -172,7 +172,7 @@
                             }
                             unitprice = items[key].price;
 
-                            subtottal = subtottal + unitprice;
+                            subtotal = subtotal + unitprice;
                             name = items[key].name;
                             totalprice = roundTo(unitprice * qty, 2);
                             if (first) {
@@ -189,9 +189,9 @@
                         }
                     }
                 }
-                $("#subtotal").html(subtottal);
-                $("remaining").html(subtottal - (order.paid || 0.00));
-                return subtottal;
+                $("#subtotal").html(subtotal);
+                $("remaining").html(subtotal - (order.paid || 0.00));
+                return subtotal;
             }
 
             ref.ref("/").on("value", function(snapshot) {
@@ -200,7 +200,7 @@
                     return;
                 }
                 else {
-                    ref.ref("/order/subtottal").set(updateTable(snapshot.val().items, snapshot.val().order));
+                    ref.ref("/order/subtotal").set(updateTable(snapshot.val().items, snapshot.val().order));
                 }
             });
 
@@ -235,7 +235,7 @@
                             $("#add-item").focus();
                         }
                         else if (value.indexOf("Exact Change Paid") > -1) {
-                            ref.ref("/order/subtottal/").once("value").then(function(snapshot) {
+                            ref.ref("/order/subtotal/").once("value").then(function(snapshot) {
                                 ref.ref("/order/paid/").set(snapshot.val());
                             });
                         }
