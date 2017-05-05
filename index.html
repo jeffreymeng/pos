@@ -190,7 +190,7 @@
                     }
                 }
                 $("#subtotal").html(subtottal);
-
+                $("remaining").html(subtottal - (order.paid || 0.00));
                 return subtottal;
             }
 
