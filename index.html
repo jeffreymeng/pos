@@ -253,7 +253,6 @@
                         else if (value.indexOf("Reset POSConfirm") > -1) {
                             //RESET POS TODO
                             firebase.database().ref("/order/").set(null);
-                            updateTable();
                         }
                         else if (value.indexOf("D") === 0) {
                             ref.ref("/order/" + value.substring(1)).transaction(function(snapshot) {
