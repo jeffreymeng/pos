@@ -145,15 +145,15 @@
         <!-- Menu Toggle Script -->
         <script>
             /*
-                                    TODO:
-                                    Add new items via firebase
-                                    Create accounts
-                                    Accept Gift cards
-                                                                                                                    */
+                                                TODO:
+                                                Add new items via firebase
+                                                Create accounts
+                                                Accept Gift cards
+                                                                                                                                */
             /*global $ firebase*/
 
             //http://stackoverflow.com/a/15762794/5511561
-            var ref = irebase.database().ref("/");
+            var ref = firebase.database().ref("/");
 
             function roundTo(n, digits) {
                 if (digits === undefined) {
@@ -257,17 +257,22 @@
                             updateTable();
                         }
                         else if (value.indexOf("D") === 0) {
-                            if (order[value.substring(1)] !== 1 && order[value.substring(1)] !== 1) {
-                                ref.ref("order/" + value + "/").transaction(function(value) {
-                                    return value - 1;
-                                });
-                            }
-                            else {
-                                ref.ref("order/" + value + "/").set(undefined);
-                            }
+                            ref.ref("/order/" + value.substring(1)).transaction(function(snapshot) {
+                                if (snapshot.val() !== 1 && snapshot.val() !== 1) {
+                                    $("#add-item").val("");
+                                    $("#add-item").focus();
+                                    return snapshot.val() - 1;
 
-                            $("#add-item").val("");
-                            $("#add-item").focus();
+                                }
+                                else {
+                                    $("#add-item").val("");
+                                    $("#add-item").focus();
+                                    return undefined;
+                                }
+
+                                $("#add-item").val("");
+                                $("#add-item").focus();
+                            });
                         }
                         /*else if (value.indexOf("X") > -1) {
                              
