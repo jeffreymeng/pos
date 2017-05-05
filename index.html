@@ -193,12 +193,17 @@
                 $("#subtotal").html(subtotal);
                 $("#total").html(subtotal);
                 if (order !== undefined && order !== null) {
+                    console.log(order.paid);
                     if (order.paid !== undefined && order.paid !== null) {
                         remaining = order.paid;
                     } else {
                         remaining = 0.00;
                     }
+                } else {
+                    console.log(10);
                 }
+                
+                $("#paid").html(order.paid);
                 $("remaining").html(remaining);
                 return subtotal;
             }
