@@ -195,7 +195,8 @@
                 if (order !== undefined && order !== null) {
                     console.log(order.paid);
                     if (order.paid !== undefined && order.paid !== null) {
-                        remaining = order.paid;
+                        $("#paid").html(order.paid);
+                        remaing = subtotal - order.paid;
                     } else {
                         remaining = 0.00;
                     }
@@ -203,7 +204,7 @@
                     console.log(10);
                 }
                 
-                $("#paid").html(order.paid);
+                
                 $("remaining").html(remaining);
                 return subtotal;
             }
