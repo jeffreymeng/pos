@@ -152,8 +152,8 @@
             }
 
             function updateTable(items, order) {
-                
-                var unitprice, totalprice, qty, name, first = true,
+
+                var unitprice, totalprice, remaining, qty, name, first = true,
                     subtotal = 0;
                 $(".item").remove();
                 for (var key in order) {
@@ -172,7 +172,7 @@
                             }
                             unitprice = items[key].price;
 
-                            
+
                             name = items[key].name;
                             totalprice = roundTo(unitprice * qty, 2);
                             subtotal = subtotal + totalprice;
@@ -180,7 +180,7 @@
                                 $("#noitems").addClass("hidden");
                                 first = false;
                             }
-                            
+
 
                             $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + "</td>" +
                                 "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + unitprice + "</td>" +
@@ -196,15 +196,17 @@
                     console.log(order.paid);
                     if (order.paid !== undefined && order.paid !== null) {
                         $("#paid").html(order.paid);
-                        remaing = subtotal - order.paid;
-                    } else {
+                        remaining = subtotal - order.paid;
+                    }
+                    else {
                         remaining = 0.00;
                     }
-                } else {
+                }
+                else {
                     console.log(10);
                 }
-                
-                
+
+
                 $("remaining").html(remaining);
                 return subtotal;
             }
@@ -281,14 +283,15 @@
                                     return null;
                                 }
 
-                                $("#add-item").val("");
-                                $("#add-item").focus();
+
                             });
                         }
                         else if (value.indexOf("M") === 0) {
                             ref.ref("/order/paid/").transaction(function(snapshot) {
-                                return snapshot + roundTo(parseInt(value.substring(1)), 2);
+                                return snapshot + roundTo(parseInt(value.substring(1), 10), 2);
                             });
+                            $("#add-item").val("");
+                            $("#add-item").focus();
                         }
                         /*else if (value.indexOf("X") > -1) {
                              

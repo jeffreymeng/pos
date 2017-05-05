@@ -36,7 +36,8 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <br><p>Scroll down</p><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        <br>
+                        <p>Scroll down</p><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
                         <h1>Thank you for shopping at Jeffmart</h1>
                         <hr>
 
@@ -109,13 +110,12 @@
         </script>
         <!-- Menu Toggle Script -->
         <script>
-            
             /*
-                                                            TODO:
-                                                            Add new items via firebase
-                                                            Create accounts
-                                                            Accept Gift cards
-                                                                                                                                            */
+                                                                        TODO:
+                                                                        Add new items via firebase
+                                                                        Create accounts
+                                                                        Accept Gift cards
+                                                                                                                                                        */
             /*global $ firebase*/
 
             //http://stackoverflow.com/a/15762794/5511561
@@ -133,8 +133,8 @@
             }
 
             function updateTable(items, order) {
-                
-                var unitprice, totalprice, qty, name, first = true,
+
+                var unitprice, totalprice, remaining, qty, name, first = true,
                     subtotal = 0;
                 $(".item").remove();
                 for (var key in order) {
@@ -153,7 +153,7 @@
                             }
                             unitprice = items[key].price;
 
-                            
+
                             name = items[key].name;
                             totalprice = roundTo(unitprice * qty, 2);
                             subtotal = subtotal + totalprice;
@@ -173,11 +173,17 @@
                 }
                 $("#subtotal").html(subtotal);
                 if (order !== undefined && order !== null) {
+                    console.log(order.paid);
                     if (order.paid !== undefined && order.paid !== null) {
-                        remaining = order.paid;
-                    } else {
+                        $("#paid").html(order.paid);
+                        remaining = subtotal - order.paid;
+                    }
+                    else {
                         remaining = 0.00;
                     }
+                }
+                else {
+                    console.log(10);
                 }
                 $("remaining").html(remaining);
                 return subtotal;
@@ -192,8 +198,7 @@
                     ref.ref("/order/subtotal").set(updateTable(snapshot.val().items, snapshot.val().order));
                 }
             });
-
-</script>
+        </script>
 
 </body>
 
