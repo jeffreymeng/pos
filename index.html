@@ -152,7 +152,7 @@
             }
 
             function updateTable(items, order) {
-
+                
                 var unitprice, totalprice, qty, name, first = true,
                     subtottal = 0;
                 $(".item").remove();
@@ -259,7 +259,7 @@
                                 else {
                                     $("#add-item").val("");
                                     $("#add-item").focus();
-                                    return undefined;
+                                    return null;
                                 }
 
                                 $("#add-item").val("");
