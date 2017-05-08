@@ -183,7 +183,7 @@
                             }
 
 
-                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + "(<a onclick=\"editItem('" + key + "')\">edit</a>)</td>" +
+                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + "(<a onclick=\"editItem('" + key + "', " + qty + ")\">edit</a>)</td>" +
                                 "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + unitprice + "</td>" +
                                 "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
 
@@ -222,8 +222,9 @@
                 }
             });
 
-            function editItem(id) {
+            function editItem(id,qty) {
                 $("#edit-item-modal-id").val(id);
+                $("#edit-item-modal-id").val(qty);
                 $("#edit-item-modal").modal("show");
                 $("#edit-item-modal-btn").click(function() {
                     var newQuantity = parseInt($("#edit-item-modal-val").val());
