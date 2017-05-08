@@ -267,22 +267,22 @@
                             $("#add-item").focus();
                         }
                         */
-                        else if (value.indexOf("Clear Formatters") > -1) {
+                        else if (value.indexOf("Clear%20Formatters") > -1) {
                             $("#add-item").val("");
                             $("#add-item").focus();
                         }
-                        else if (value.indexOf("Exact Change Paid") > -1) {
+                        else if (value.indexOf("Exact%20Change%20Paid") > -1) {
                             ref.ref("/order/subtotal/").once("value").then(function(snapshot) {
                                 ref.ref("/order/paid/").set(snapshot.val());
                             });
                             $("#add-item").val("");
                             $("#add-item").focus();
                         }
-                        else if (value.indexOf("Reset POS") > -1) {
-                            $("#add-item").val("Reset POS");
+                        else if (value.indexOf("Reset%20POS") > -1) {
+                            $("#add-item").val("Reset%20POS");
                             $("#add-item").focus();
                         }
-                        else if (value.indexOf("Reset POSConfirm") > -1) {
+                        else if (value.indexOf("Reset%20POSConfirm") > -1) {
                             //RESET POS TODO
                             ref.ref("/order/").remove();
                             $("#noitems").removeClass("hidden");
