@@ -129,12 +129,13 @@
                 e.preventDefault();
                 $("#wrapper").toggleClass("toggled");
             });
+
             /*
-                                                            TODO:
-                                                            Add new items via firebase
-                                                            Create accounts
-                                                            Accept Gift cards
-                                                                                                                                            */
+            TODO:
+                1.Add new items via firebase
+                2.Create accounts for merchant
+                3.Accept Gift cards
+            */
             /*global $ firebase*/
 
             //http://stackoverflow.com/a/15762794/5511561
@@ -182,7 +183,7 @@
                             }
 
 
-                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + "</td>" +
+                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + "(<a onclick='editItem('" + key + "')'>edit</a>)</td>" +
                                 "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + unitprice + "</td>" +
                                 "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
 
@@ -207,7 +208,7 @@
                 }
 
 
-                $("#remaining").html( roundTo(remaining, 2));
+                $("#remaining").html(roundTo(remaining, 2));
                 return subtotal;
             }
 
@@ -221,10 +222,28 @@
                 }
             });
 
+            function editItem(id) {
+                $("#edit-item-modal-id").val(id);
+                $("#edit-item-modal").modal("show");
+                $("#edit-item-modal-btn").click(function() {
+                    var newQuantity = parseInt($("#edit-item-modal-val").val());
+                    if (newQuantity > 1) {
 
+                        ref.ref("/order/" + id).set(newQuantity);
+
+                    }
+                    else {
+
+                        ref.ref("/order/" + id).set(null);
+                    }
+
+                    $("#edit-item-modal").modal("hide");
+
+                });
+            }
             $("#add-item").keypress(function(e) {
                     if (e.which == 13) {
-                        var value = $("#add-item").val();
+                        var value = encodeURIComponent($("#add-item").val()); //A calid UID will not be un-rl safe, This is to prevent firebase errors.5
                         if (value.indexOf("Delete next") > -1) {
                             $("#add-item").val("D");
                             $("#add-item").focus();
@@ -264,12 +283,30 @@
                         }
                         else if (value.indexOf("Reset POSConfirm") > -1) {
                             //RESET POS TODO
-                            firebase.database().ref("/order/").set(null);
+                            ref.ref("/order/").remove();
                             $("#noitems").removeClass("hidden");
                             $("#add-item").val("");
                             $("#add-item").focus();
                         }
                         else if (value.indexOf("D") === 0) {
+                            ref.ref("/order/" + value.substring(1)).transaction(function(snapshot) {
+                                if (snapshot > 1 && snapshot !== null && snapshot !== undefined) {
+                                    $("#add-item").val("");
+                                    $("#add-item").focus();
+                                    return snapshot - 1;
+
+                                }
+                                else {
+                                    $("#add-item").val("");
+                                    $("#add-item").focus();
+                                    return null;
+                                }
+
+
+                            });
+                        }
+                        /*
+                        else if (value.indexOf("CPN") === 0) {
                             ref.ref("/order/" + value.substring(1)).transaction(function(snapshot) {
                                 if (snapshot !== 1 && snapshot !== 1) {
                                     $("#add-item").val("");
@@ -285,6 +322,32 @@
 
 
                             });
+                        }
+                        */
+
+                        else if (value.indexOf("GC") === 0) {
+                            $("#gift-card-modal").modal("show");
+                            $("#gift-card-id").val(value.substring(2));
+                            $("#gift-card-modal-activate").click(function() {
+                                    var val = value.substring(2);
+                                    var id = value.substring(2);
+
+                                })
+                                /*ref.ref("/gc/").transaction(function(snapshot) {
+                                    if (snapshot !== 1 && snapshot !== 1) {
+                                        $("#add-item").val("");
+                                        $("#add-item").focus();
+                                        return snapshot - 1;
+
+                                    }
+                                    else {
+                                        $("#add-item").val("");
+                                        $("#add-item").focus();
+                                        return null;
+                                    }
+
+
+                                });*/
                         }
                         else if (value.indexOf("M") === 0) {
                             ref.ref("/order/paid/").transaction(function(snapshot) {
@@ -336,7 +399,50 @@
 
             );
         </script>
+        <!-- Modal -->
+        <div class="modal fade" id="gift-card-modal" tabindex="-1" role="dialog" aria-labelledby="gift-card-modal-label">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="gift-card-modal-label">Add gift card</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label for="gift-card-modal-id">Gift card ID:</label>
+                        <input id="gift-card-modal-id" class="form-control disabled" disabled>
+                        <label for="gift-card-modal-val">Gift card Value:</label>
+                        <input id="gift-card-modal-val" class="form-control">
+                        <button id="gift-card-modal-activate" class="btn btn-primary form-control">Activate Gift Card</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="edit-item-modal" tabindex="-1" role="dialog" aria-labelledby="edit-item-modal-label">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="edit-item-modal-label">Manually Edit Item</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label for="edit-item-modal-id">Item ID:</label>
+                        <input id="edit-item-modal-id" class="form-control disabled" disabled>
+                        <label for="edit-item-modal-val">Quantity:</label>
+                        <input id="edit-item-modal-val" class="form-control">
+                        <button id="edit-item-modal-btn" class="btn btn-primary form-control">Update Item Quantity</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
 </body>
 
 </html>
