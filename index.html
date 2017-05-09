@@ -222,7 +222,7 @@
                 }
             });
 
-            function editItem(id,qty) {
+            function editItem(id, qty) {
                 $("#edit-item-modal-id").val(id);
                 $("#edit-item-modal-id").val(qty);
                 $("#edit-item-modal").modal("show");
@@ -267,22 +267,22 @@
                             $("#add-item").focus();
                         }
                         */
-                        else if (value.indexOf("Clear%20Formatters") > -1) {
+                        else if (value === "Clear%20Formatters") {
                             $("#add-item").val("");
                             $("#add-item").focus();
                         }
-                        else if (value.indexOf("Exact%20Change%20Paid") > -1) {
+                        else if (value === "Exact%20Change%20Paid") {
                             ref.ref("/order/subtotal/").once("value").then(function(snapshot) {
                                 ref.ref("/order/paid/").set(snapshot.val());
                             });
                             $("#add-item").val("");
                             $("#add-item").focus();
                         }
-                        else if (value.indexOf("Reset%20POS") > -1) {
+                        else if (value === "Reset%20POS") {
                             $("#add-item").val("Reset POS");
                             $("#add-item").focus();
                         }
-                        else if (value.indexOf("Reset%20POSConfirm") > -1) {
+                        else if (value === "Reset%20POSConfirm") {
                             //RESET POS TODO
                             ref.ref("/order/").remove();
                             $("#noitems").removeClass("hidden");
