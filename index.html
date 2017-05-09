@@ -181,8 +181,8 @@
                             }
 
 
-                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + "(<a onclick=\"editBlkItem('" + key + "', " + qty + ")\">edit</a>)</td>" +
-                                "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + totalprice + "</td>" +
+                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + " (" + qty + "Pounds @ " + lbPrice + "/Pound)(<a onclick=\"editBlkItem('" + key + "', " + qty + ")\">edit</a>)</td>" +
+                                "<td id='item-" + key + "-qty'>1</td><td id='item-" + key + "-unitprice'>$" + totalprice + "</td>" +
                                 "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
 
                             
@@ -507,7 +507,7 @@
                     <div class="modal-body">
                         <label for="blk-item-modal-id">Item ID:</label>
                         <input id="blk-item-modal-id" class="form-control disabled" disabled>
-                        <label for="blk-item-modal-val">Weight(Ounces):</label>
+                        <label for="blk-item-modal-val">Weight(Pounds):</label>
                         <input id="blk-item-modal-val" class="form-control">
                         <button id="blk-item-modal-btn" class="btn btn-primary form-control">Add Item</button>
                     </div>
