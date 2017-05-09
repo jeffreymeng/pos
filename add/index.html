@@ -64,7 +64,7 @@
                         <label for="name">Name:</label>
                         <input class="form-control" id="name">
                         <hr>
-                        <button id="confirm" class="btn btn-primary form-control">Add Item</button>
+                        <button id="submit" class="btn btn-primary form-control">Add Item</button>
                     </div>
                 </div>
             </div>
@@ -104,6 +104,7 @@
                     name:$("#name").val(),
                     price:parseInt($("#price").val(), 10)
                 });
+                $("input.form-control").val("")
             });
 
             </script>
