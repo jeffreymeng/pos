@@ -224,7 +224,7 @@
 
             function editItem(id, qty) {
                 $("#edit-item-modal-id").val(id);
-                $("#edit-item-modal-id").val(qty);
+                $("#edit-item-modal-val").val(qty);
                 $("#edit-item-modal").modal("show");
                 $("#edit-item-modal-btn").click(function() {
                     var newQuantity = parseInt($("#edit-item-modal-val").val());
