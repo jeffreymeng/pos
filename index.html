@@ -164,9 +164,9 @@
                         }
                         else if (key.indexOf("BLK") === 0 && items[key] === null || items[key] === undefined) {
                             var val = order[key];
-                            console.log(key);
-                            console.log(items[key]);
-                            console.log(items[key].lbPrice);
+                            //console.log(key);
+                            //console.log(items[key]);
+                            //console.log(items[key].lbPrice);
                             var lbPrice = items[key].lbPrice;
                             qty = order[key];
                             if (qty <= 0) {
@@ -224,7 +224,7 @@
                 $("#subtotal").html(subtotal);
                 $("#total").html(subtotal);
                 if (order !== undefined && order !== null) {
-                    console.log(order.paid);
+                    //console.log(order.paid);
                     if (order.paid !== undefined && order.paid !== null) {
                         $("#paid").html(order.paid);
                         remaining = subtotal - order.paid;
@@ -243,7 +243,7 @@
             }
 
             ref.ref("/").on("value", function(snapshot) {
-                console.log(snapshot);
+                //console.log(snapshot);
                 if (snapshot.val().order === null || snapshot.val().order === undefined) {
                     return;
                 }
@@ -362,7 +362,7 @@
 
                             $("#blk-item-modal").modal("show");
                             $("#blk-item-modal-btn").click(function() {
-                                ref.ref("/order/" + value.substring(3)).set(parseInt($("#blk-item-modal-val").val()));
+                                ref.ref("/order/" + value).set(parseInt($("#blk-item-modal-val").val()));
                             });
 
                             $("#edit-item-modal").modal("hide");
