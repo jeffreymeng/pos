@@ -162,6 +162,11 @@
                         if (key === "subtotal" || key === "paid") {
                             continue;
                         }
+                        else if (key.indexOf("BLK") === 0) {
+                            var val = order[key];
+                            console.log(val);
+                            
+                        }
                         else if (items[key] === null || items[key] === undefined) {
                             console.log("Item " + key + " was ignored because it does not exist in the items object.");
                             continue;
