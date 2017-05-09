@@ -162,7 +162,12 @@
                         if (key === "subtotal" || key === "paid") {
                             continue;
                         }
-                        else if (key.indexOf("BLK") === 0 && items[key] !== null || items[key] !== undefined) {
+
+                        else if (items[key] === null || items[key] === undefined) {
+                            console.log("Item " + key + " was ignored because it does not exist in the items object.");
+                            continue;
+                        }
+                        else if (key.indexOf("BLK") === 0) {
                             var val = order[key];
                             //console.log(key);
                             //console.log(items[key]);
@@ -191,10 +196,6 @@
 
 
 
-                        }
-                        else if (items[key] === null || items[key] === undefined) {
-                            console.log("Item " + key + " was ignored because it does not exist in the items object.");
-                            continue;
                         }
                         else {
                             qty = order[key];
