@@ -228,7 +228,7 @@
                 $("#edit-item-modal").modal("show");
                 $("#edit-item-modal-btn").click(function() {
                     var newQuantity = parseInt($("#edit-item-modal-val").val());
-                    if (newQuantity > 1) {
+                    if (newQuantity >= 1) {
 
                         ref.ref("/order/" + id).set(newQuantity);
 
