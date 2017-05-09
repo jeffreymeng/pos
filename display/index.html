@@ -23,17 +23,7 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-<style>
-    body {
-  position: relative;
-}
-#main {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-</style>
+
 </head>
 
 <body>
@@ -119,17 +109,20 @@
         </script>
         <!-- Menu Toggle Script -->
         <script>
+            $("#menu-toggle").click(function(e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+
             /*
-                                                                                    TODO:
-                                                                                    Add new items via firebase
-                                                                                    Create accounts
-                                                                                    Accept Gift cards
-                                                                                                                                                                    */
+            TODO:
+                1.Add new items via firebase
+                2.Create accounts for merchant
+                3.Accept Gift cards
+            */
             /*global $ firebase*/
 
             //http://stackoverflow.com/a/15762794/5511561
-
-
             var ref = firebase.database();
 
             function roundTo(n, digits) {
@@ -153,9 +146,40 @@
                         if (key === "subtotal" || key === "paid") {
                             continue;
                         }
+
                         else if (items[key] === null || items[key] === undefined) {
                             console.log("Item " + key + " was ignored because it does not exist in the items object.");
                             continue;
+                        }
+                        else if (key.indexOf("BLK") === 0) {
+                            var val = order[key];
+                            //console.log(key);
+                            //console.log(items[key]);
+                            //console.log(items[key].lbPrice);
+                            var lbPrice = items[key].lbPrice;
+                            qty = order[key];
+                            if (qty <= 0) {
+                                continue;
+                            }
+
+
+
+                            name = items[key].name;
+                            totalprice = roundTo(lbPrice * qty, 2);
+                            subtotal = subtotal + totalprice;
+                            if (first) {
+                                $("#noitems").addClass("hidden");
+                                first = false;
+                            }
+
+
+                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + " (" + qty + " Pound" + (qty === 1 ? "" : "s") + " @ $" + lbPrice + "/Pound)</td>" +
+                                "<td id='item-" + key + "-qty'>1</td><td id='item-" + key + "-unitprice'>$" + totalprice + "</td>" +
+                                "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
+
+
+
+
                         }
                         else {
                             qty = order[key];
@@ -185,7 +209,7 @@
                 $("#subtotal").html(subtotal);
                 $("#total").html(subtotal);
                 if (order !== undefined && order !== null) {
-                    console.log(order.paid);
+                    //console.log(order.paid);
                     if (order.paid !== undefined && order.paid !== null) {
                         $("#paid").html(order.paid);
                         remaining = subtotal - order.paid;
@@ -199,12 +223,12 @@
                 }
 
 
-                $("#remaining").html( roundTo(remaining, 2));
+                $("#remaining").html(roundTo(remaining, 2));
                 return subtotal;
             }
 
             ref.ref("/").on("value", function(snapshot) {
-                console.log(snapshot);
+                //console.log(snapshot);
                 if (snapshot.val().order === null || snapshot.val().order === undefined) {
                     return;
                 }
@@ -212,6 +236,9 @@
                     ref.ref("/order/subtotal").set(updateTable(snapshot.val().items, snapshot.val().order));
                 }
             });
+
+            
+            
         </script>
 
 </body>
