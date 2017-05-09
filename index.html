@@ -162,9 +162,31 @@
                         if (key === "subtotal" || key === "paid") {
                             continue;
                         }
-                        else if (key.indexOf("BLK") === 0) {
+                        else if (key.indexOf("BLK") === 0 && items[key] === null || items[key] === undefined) {
                             var val = order[key];
-                            console.log(val);
+                            var lbPrice = items[key].lbPrice;
+                            qty = order[key];
+                            if (qty <= 0) {
+                                continue;
+                            }
+                            
+
+
+                            name = items[key].name;
+                            totalprice = roundTo(lbPrice * qty, 2);
+                            subtotal = subtotal + totalprice;
+                            if (first) {
+                                $("#noitems").addClass("hidden");
+                                first = false;
+                            }
+
+
+                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + "(<a onclick=\"editBlkItem('" + key + "', " + qty + ")\">edit</a>)</td>" +
+                                "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + totalprice + "</td>" +
+                                "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
+
+                            
+                            
                             
                         }
                         else if (items[key] === null || items[key] === undefined) {
@@ -247,6 +269,26 @@
 
                 });
             }
+            function editBlkItem(id, qty) {
+                $("#blk-item-modal-id").val(id);
+                $("#blk-item-modal-val").val(qty);
+                $("#blk-item-modal").modal("show");
+                $("#blk-item-modal-btn").click(function() {
+                    var newQuantity = parseInt($("#edit-item-modal-val").val());
+                    if (newQuantity > 0) {
+
+                        ref.ref("/order/" + id).set(newQuantity);
+
+                    }
+                    else {
+
+                        ref.ref("/order/" + id).set(null);
+                    }
+
+                    $("#edit-item-modal").modal("hide");
+
+                });
+            }
             $("#add-item").keypress(function(e) {
                     if (e.which == 13) {
                         var value = encodeURIComponent($("#add-item").val()); //A calid UID will not be un-rl safe, This is to prevent firebase errors.5
@@ -310,6 +352,12 @@
 
 
                             });
+                        }
+                         else if (value.indexOf("BLK") === 0) {
+                             $("#blk-item-modal-id").val(value.substring(3));
+                            
+                            $("#blk-item-modal").modal("show");
+                            ref.ref("/order/" + value.substring(3)).set(parseInt($("#blk-item-modal-val").val()));
                         }
                         /*
                         else if (value.indexOf("CPN") === 0) {
@@ -441,6 +489,27 @@
                         <label for="edit-item-modal-val">Quantity:</label>
                         <input id="edit-item-modal-val" class="form-control">
                         <button id="edit-item-modal-btn" class="btn btn-primary form-control">Update Item Quantity</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="blk-item-modal" tabindex="-1" role="dialog" aria-labelledby="blk-item-modal-label">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="blk-item-modal-label">Edit Bulk Item Info</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label for="blk-item-modal-id">Item ID:</label>
+                        <input id="blk-item-modal-id" class="form-control disabled" disabled>
+                        <label for="blk-item-modal-val">Weight(Ounces):</label>
+                        <input id="blk-item-modal-val" class="form-control">
+                        <button id="blk-item-modal-btn" class="btn btn-primary form-control">Add Item</button>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
