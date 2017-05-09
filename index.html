@@ -169,7 +169,7 @@
                             if (qty <= 0) {
                                 continue;
                             }
-                            
+
 
 
                             name = items[key].name;
@@ -185,9 +185,9 @@
                                 "<td id='item-" + key + "-qty'>1</td><td id='item-" + key + "-unitprice'>$" + totalprice + "</td>" +
                                 "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
 
-                            
-                            
-                            
+
+
+
                         }
                         else if (items[key] === null || items[key] === undefined) {
                             console.log("Item " + key + " was ignored because it does not exist in the items object.");
@@ -269,6 +269,7 @@
 
                 });
             }
+
             function editBlkItem(id, qty) {
                 $("#blk-item-modal-id").val(id);
                 $("#blk-item-modal-val").val(qty);
@@ -353,11 +354,15 @@
 
                             });
                         }
-                         else if (value.indexOf("BLK") === 0) {
-                             $("#blk-item-modal-id").val(value.substring(3));
-                            
+                        else if (value.indexOf("BLK") === 0) {
+                            $("#blk-item-modal-id").val(value.substring(3));
+
                             $("#blk-item-modal").modal("show");
-                            ref.ref("/order/" + value.substring(3)).set(parseInt($("#blk-item-modal-val").val()));
+                            $("#blk-item-modal-btn").click(function() {
+                                ref.ref("/order/" + value.substring(3)).set(parseInt($("#blk-item-modal-val").val()));
+                            });
+
+                            $("#edit-item-modal").modal("hide");
                         }
                         /*
                         else if (value.indexOf("CPN") === 0) {
