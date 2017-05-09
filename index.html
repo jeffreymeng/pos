@@ -164,6 +164,9 @@
                         }
                         else if (key.indexOf("BLK") === 0 && items[key] === null || items[key] === undefined) {
                             var val = order[key];
+                            console.log(key);
+                            console.log(items[key]);
+                            console.log(items[key].lbPrice);
                             var lbPrice = items[key].lbPrice;
                             qty = order[key];
                             if (qty <= 0) {
