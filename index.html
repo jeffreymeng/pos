@@ -367,9 +367,10 @@
                             $("#blk-item-modal").modal("show");
                             $("#blk-item-modal-btn").click(function() {
                                 ref.ref("/order/" + value).set(parseInt($("#blk-item-modal-val").val()));
+                                $("#blk-item-modal").modal("hide");
                             });
 
-                            $("#edit-item-modal").modal("hide");
+                            
                         }
                         /*
                         else if (value.indexOf("CPN") === 0) {
