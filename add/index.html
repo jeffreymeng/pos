@@ -102,7 +102,7 @@
             $("#submit").click(function(){
                 firebase.database().ref("/items/" + $("#barcode").val()).set({
                     name:$("#name").val(),
-                    price:parseInt($("#price").val(), 10)
+                    price:parseInt($("#price").val())
                 });
                 $("input.form-control").val("")
             });
