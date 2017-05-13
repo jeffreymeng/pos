@@ -361,7 +361,7 @@
                         else if (value === "Reset%20POSConfirm") {
                             //RESET POS TODO
                             ref.ref("/order/").remove();
-                            $("#noitems").removeClass("hidden");
+
                             $("#add-item").val("");
                             $("#add-item").focus();
                         }
@@ -421,8 +421,10 @@
                                 var id = value.substring(2);
                                 ref.ref("/gc/" + id).set(parseFloat(val));
                                 ref.ref("/order/GC" + id).set(parseFloat(val));
-
+                                $("#add-item").val("");
+                                $("#add-item").focus();
                             });
+
 
                         }
                         else if (value.indexOf("MGC") === 0) {
