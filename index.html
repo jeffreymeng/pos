@@ -420,7 +420,7 @@
                                     var val = $("#gift-card-modal-val").val();
                                     var id = value.substring(2);
                                     ref.ref("/gc/" + id).set(parseFloat(val));
-                                    ref.ref("/order/" + id).set(parseFloat(val));
+                                    ref.ref("/order/GC" + id).set(parseFloat(val));
 
                                 });
                                 
