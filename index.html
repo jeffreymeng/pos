@@ -165,7 +165,27 @@
                         if (key === "subtotal" || key === "paid") {
                             continue;
                         }
+                        else if (key.indexOf("GC") === 0) {
+                            totalprice = order[key];
+                            //console.log(key);
+                            //console.log(items[key]);
+                            //console.log(items[key].lbPrice);
 
+                            subtotal = subtotal + totalprice;
+                            if (first) {
+                                $("#noitems").addClass("hidden");
+                                first = false;
+                            }
+
+
+                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>Gift Card - $" + val + "</td>" +
+                                "<td id='item-" + key + "-qty'>1</td><td id='item-" + key + "-unitprice'>$" + totalprice + "</td>" +
+                                "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
+
+
+
+
+                        }
                         else if (items[key] === null || items[key] === undefined) {
                             console.log("Item " + key + " was ignored because it does not exist in the items object.");
                             continue;
@@ -200,27 +220,7 @@
 
 
                         }
-                        else if (key.indexOf("GC") === 0) {
-                            totalprice = order[key];
-                            //console.log(key);
-                            //console.log(items[key]);
-                            //console.log(items[key].lbPrice);
-                            
-                            subtotal = subtotal + totalprice;
-                            if (first) {
-                                $("#noitems").addClass("hidden");
-                                first = false;
-                            }
 
-
-                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>Gift Card - $" + val + "</td>" +
-                                "<td id='item-" + key + "-qty'>1</td><td id='item-" + key + "-unitprice'>$" + totalprice + "</td>" +
-                                "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
-
-
-
-
-                        }
                         else {
                             qty = order[key];
                             if (qty <= 0) {
@@ -391,7 +391,7 @@
                                 $("#blk-item-modal").modal("hide");
                             });
 
-                            
+
                         }
                         /*
                         else if (value.indexOf("CPN") === 0) {
@@ -417,18 +417,18 @@
                             $("#gift-card-modal").modal("show");
                             $("#gift-card-modal-id").val(value.substring(2));
                             $("#gift-card-modal-activate").click(function() {
-                                    var val = $("#gift-card-modal-val").val();
-                                    var id = value.substring(2);
-                                    ref.ref("/gc/" + id).set(parseFloat(val));
-                                    ref.ref("/order/GC" + id).set(parseFloat(val));
+                                var val = $("#gift-card-modal-val").val();
+                                var id = value.substring(2);
+                                ref.ref("/gc/" + id).set(parseFloat(val));
+                                ref.ref("/order/GC" + id).set(parseFloat(val));
 
-                                });
-                                
+                            });
+
                         }
                         else if (value.indexOf("MGC") === 0) {
                             $("#gift-card-pay-modal-id").html(value.substring(3));
-                            ref.ref("/").once("value").then(function(snapshot){
-                                if ( snapshot.val().order.subtotal < 0) {
+                            ref.ref("/").once("value").then(function(snapshot) {
+                                if (snapshot.val().order.subtotal < 0) {
                                     return;
                                 }
                                 var remaing = snapshot.val().order.subtotal - (snapshot.val().order.paid !== null ? snapshot.val().order.paid : 0.00);
@@ -436,17 +436,18 @@
                                 var topay;
                                 if (gcVal >= remaing) {
                                     topay = remaing;
-                                } else {
+                                }
+                                else {
                                     topay = gcVal;
                                 }
                                 $("#gift-card-pay-modal-val").html(topay);
                                 $("#gift-card-pay-modal-left").html(remaing - topay);
-                            $("#gift-card-pay-modal").modal("show");
-                            $("#gift-card-pay-modal-btn").click(function(){
-                                firebase.database().ref("/GC/" + value.substring(3)).set(gcVal - topay);
+                                $("#gift-card-pay-modal").modal("show");
+                                $("#gift-card-pay-modal-btn").click(function() {
+                                    firebase.database().ref("/GC/" + value.substring(3)).set(gcVal - topay);
+                                });
                             });
-                            });
-                            
+
                         }
                         else if (value.indexOf("M") === 0) {
                             ref.ref("/order/paid/").transaction(function(snapshot) {
