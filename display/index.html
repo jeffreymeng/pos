@@ -147,7 +147,27 @@
                         if (key === "subtotal" || key === "paid") {
                             continue;
                         }
+                        else if (key.indexOf("GC") === 0) {
+                            totalprice = order[key];
+                            //console.log(key);
+                            //console.log(items[key]);
+                            //console.log(items[key].lbPrice);
 
+                            subtotal = subtotal + totalprice;
+                            if (first) {
+                                $("#noitems").addClass("hidden");
+                                first = false;
+                            }
+
+
+                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>Gift Card - $" + totalprice + "</td>" +
+                                "<td id='item-" + key + "-qty'>1</td><td id='item-" + key + "-unitprice'>$" + totalprice + "</td>" +
+                                "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
+
+
+
+
+                        }
                         else if (items[key] === null || items[key] === undefined) {
                             console.log("Item " + key + " was ignored because it does not exist in the items object.");
                             continue;
@@ -182,6 +202,7 @@
 
 
                         }
+
                         else {
                             qty = order[key];
                             if (qty <= 0) {
@@ -237,6 +258,8 @@
                     ref.ref("/order/subtotal").set(updateTable(snapshot.val().items, snapshot.val().order));
                 }
             });
+
+            
 
             
             
