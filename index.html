@@ -200,6 +200,27 @@
 
 
                         }
+                        else if (key.indexOf("GC") === 0) {
+                            totalprice = order[key];
+                            //console.log(key);
+                            //console.log(items[key]);
+                            //console.log(items[key].lbPrice);
+                            
+                            subtotal = subtotal + totalprice;
+                            if (first) {
+                                $("#noitems").addClass("hidden");
+                                first = false;
+                            }
+
+
+                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>Gift Card - $" + val + "</td>" +
+                                "<td id='item-" + key + "-qty'>1</td><td id='item-" + key + "-unitprice'>$" + totalprice + "</td>" +
+                                "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
+
+
+
+
+                        }
                         else {
                             qty = order[key];
                             if (qty <= 0) {
@@ -394,27 +415,24 @@
 
                         else if (value.indexOf("GC") === 0) {
                             $("#gift-card-modal").modal("show");
-                            $("#gift-card-id").val(value.substring(2));
+                            $("#gift-card-modal-id").val(value.substring(2));
                             $("#gift-card-modal-activate").click(function() {
-                                    var val = value.substring(2);
+                                    var val = $("#gift-card-modal-val").val();
                                     var id = value.substring(2);
+                                    ref.ref("/gc/" + id).set(parseFloat(val));
+                                    ref.ref("/order/" + id).set(parseFloat(val));
 
-                                })
-                                /*ref.ref("/gc/").transaction(function(snapshot) {
-                                    if (snapshot !== 1 && snapshot !== 1) {
-                                        $("#add-item").val("");
-                                        $("#add-item").focus();
-                                        return snapshot - 1;
-
-                                    }
-                                    else {
-                                        $("#add-item").val("");
-                                        $("#add-item").focus();
-                                        return null;
-                                    }
-
-
-                                });*/
+                                });
+                                
+                        }
+                        else if (value.indexOf("MGC") === 0) {
+                            //STUFF
+                            var gcid = value.substring(3);
+                            //ref.ref("/order/paid/").transaction(function(snapshot) {
+                                //return snapshot + roundTo(parseInt(value.substring(1), 10), 2);
+                            //});
+                           // $("#add-item").val("");
+                            //$("#add-item").focus();
                         }
                         else if (value.indexOf("M") === 0) {
                             ref.ref("/order/paid/").transaction(function(snapshot) {
