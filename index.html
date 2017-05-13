@@ -282,7 +282,7 @@
                 $("#edit-item-modal-val").val(qty);
                 $("#edit-item-modal").modal("show");
                 $("#edit-item-modal-btn").click(function() {
-                    var newQuantity = parseInt($("#edit-item-modal-val").val());
+                    var newQuantity = parseFloat($("#edit-item-modal-val").val());
                     if (newQuantity >= 1) {
 
                         ref.ref("/order/" + id).set(newQuantity);
@@ -303,7 +303,7 @@
                 $("#blk-item-modal-val").val(qty);
                 $("#blk-item-modal").modal("show");
                 $("#blk-item-modal-btn").click(function() {
-                    var newQuantity = parseInt($("#edit-item-modal-val").val());
+                    var newQuantity = parseFloat($("#edit-item-modal-val").val());
                     if (newQuantity > 0) {
 
                         ref.ref("/order/" + id).set(newQuantity);
@@ -321,7 +321,7 @@
             $("#add-item").keypress(function(e) {
                     if (e.which == 13) {
                         var value = encodeURIComponent($("#add-item").val()); //A calid UID will not be un-rl safe, This is to prevent firebase errors.5
-                        if (value.indexOf("Delete next") > -1) {
+                        if (value.indexOf("Delete%20next") > -1) {
                             $("#add-item").val("D");
                             $("#add-item").focus();
                         }
@@ -387,7 +387,7 @@
 
                             $("#blk-item-modal").modal("show");
                             $("#blk-item-modal-btn").click(function() {
-                                ref.ref("/order/" + value).set(parseInt($("#blk-item-modal-val").val()));
+                                ref.ref("/order/" + value).set(parseFloat($("#blk-item-modal-val").val()));
                                 $("#blk-item-modal").modal("hide");
                             });
 
@@ -451,7 +451,7 @@
                         }
                         else if (value.indexOf("M") === 0) {
                             ref.ref("/order/paid/").transaction(function(snapshot) {
-                                return snapshot + roundTo(parseInt(value.substring(1), 10), 2);
+                                return snapshot + roundTo(parseFloat(value.substring(1), 10), 2);
                             });
                             $("#add-item").val("");
                             $("#add-item").focus();
