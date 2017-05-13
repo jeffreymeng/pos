@@ -426,13 +426,27 @@
                                 
                         }
                         else if (value.indexOf("MGC") === 0) {
-                            //STUFF
-                            var gcid = value.substring(3);
-                            //ref.ref("/order/paid/").transaction(function(snapshot) {
-                                //return snapshot + roundTo(parseInt(value.substring(1), 10), 2);
-                            //});
-                           // $("#add-item").val("");
-                            //$("#add-item").focus();
+                            $("#gift-card-pay-modal-id").html(value.substring(3));
+                            ref.ref("/").once("value").then(function(snapshot){
+                                if ( snapshot.val().order.subtotal < 0) {
+                                    return;
+                                }
+                                var remaing = snapshot.val().order.subtotal - (snapshot.val().order.paid !== null ? snapshot.val().order.paid : 0.00);
+                                var gcVal = snapshot.val().GC[value.substring(3)];
+                                var topay;
+                                if (gcVal >= remaing) {
+                                    topay = remaing;
+                                } else {
+                                    topay = gcVal;
+                                }
+                                $("#gift-card-pay-modal-val").html(topay);
+                                $("#gift-card-pay-modal-left").html(remaing - topay);
+                            $("#gift-card-pay-modal").modal("show");
+                            $("#gift-card-pay-modal-btn").click(function(){
+                                firebase.database().ref("/GC/" + value.substring(3)).set(gcVal - topay);
+                            });
+                            });
+                            
                         }
                         else if (value.indexOf("M") === 0) {
                             ref.ref("/order/paid/").transaction(function(snapshot) {
@@ -541,6 +555,24 @@
                         <label for="blk-item-modal-val">Weight(Pounds):</label>
                         <input id="blk-item-modal-val" class="form-control">
                         <button id="blk-item-modal-btn" class="btn btn-primary form-control">Add Item</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="gift-card-pay-modal" tabindex="-1" role="dialog" aria-labelledby="gift-card-pay-modal-label">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="gift-card-pay-modal-label">Confirm Gift Card Payment</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Use gift card <b id="gift-card-pay-modal-id">Loading...</b> to pay $<b id="gift-card-pay-modal-pay">Loading...</b> so that gift card will have $<b id="gift-card-pay-modal-left"></b> left?</p>
+                        <button id="gift-card-pay-modal-btn" class="btn btn-primary form-control">Pay</button>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
