@@ -39,13 +39,16 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/">Home</a>
+                    <a href="/public/">Home</a>
                 </li>
                 <li>
-                    <a href="/add/">Add Item</a>
+                    <a href="/public/add/">Add Item</a>
                 </li>
                 <li>
-                    <a href="/docs/">Documentation</a>
+                    <a href="/public/display">Display View</a>
+                </li>
+                <li>
+                    <a href="/public/docs/">Documentation</a>
                 </li>
 
             </ul>
@@ -98,7 +101,7 @@
         <!-- Menu Toggle Script -->
         <script>
             /* global $ firebase */
-            
+
             $("#menu-toggle").click(function (e) {
                 e.preventDefault();
                 $("#wrapper").toggleClass("toggled");
