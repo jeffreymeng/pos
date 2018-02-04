@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>JPOS</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/simple-sidebar.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="/">
+                        JPOS
+                    </a>
+                </li>
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li>
+                    <a href="/add/">Add Item</a>
+                </li>
+                <li>
+                    <a href="/docs/">Documentation</a>
+                </li>
+
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <a class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                        <h1>JPOS</h1>
+                        <hr>
+                        <label for="addd-item">Add item:</label>
+                        <input class="form-control" id="add-item">
+                        <div class="container">
+
+                            <h1>Shopping Cart</h1>
+                            <hr>
+                            <table class="table table-striped table-hover table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Quantity</th>
+                                        <th>Unit Price</th>
+                                        <th>Total Price</th>
+                                    </tr>
+                                    <tr id="noitems">
+                                        <th colspan="4">No items</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3">
+                                            <span class="pull-right">Subtotal</span>
+                                        </th>
+                                        <th>$
+                                            <span id="subtotal">0.00</span>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3">
+                                            <span class="pull-right">Tax</span>
+                                        </th>
+                                        <th>$0.00</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3">
+                                            <span class="pull-right">Total</span>
+                                        </th>
+                                        <th>$
+                                            <span id="total">0.00</span>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3">
+                                            <span class="pull-right">Paid</span>
+                                        </th>
+                                        <th>$
+                                            <span id="paid">0.00</span>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3">
+                                            <span class="pull-right" id="remaining-title">Remaining Payment</span>
+                                        </th>
+                                        <th>$
+                                            <span id="remaining">0.00</span>
+                                        </th>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /#page-content-wrapper -->
+
+        </div>
+        <!-- /#wrapper -->
+
+        <!-- jQuery -->
+        <script src="js/jquery.js"></script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="js/bootstrap.min.js"></script>
+
+        <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyAfZd4ScnPk1MsFxPqWlIDFRI7GYYPgwq8",
+                authDomain: "jpos.firebaseapp.com",
+                databaseURL: "https://jpos.firebaseio.com",
+                projectId: "firebase-jpos",
+                storageBucket: "firebase-jpos.appspot.com",
+                messagingSenderId: "1047974441988"
+            };
+            firebase.initializeApp(config);
+        </script>
+        <!-- Menu Toggle Script -->
+        <script>
+            
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+
+            /*
+            TODO:
+                1. [X] Add new items via firebase
+                2. [ ] Create accounts for merchant
+                3. [X] Accept Gift cards
+            */
+            /*global $ firebase*/
+
+            //http://stackoverflow.com/a/15762794/5511561
+            var ref = firebase.database().ref("/public/");
+
+            function roundTo(n, digits) {
+                if (digits === undefined) {
+                    digits = 0;
+                }
+
+                var multiplicator = Math.pow(10, digits);
+                n = parseFloat((n * multiplicator).toFixed(11));
+                var test = (Math.round(n) / multiplicator);
+                return +(test.toFixed(2));
+            }
+
+            function updateTable(items, order) {
+
+                var unitprice, totalprice, remaining, qty, name, first = true,
+                    subtotal = 0;
+                $(".item").remove();
+                for (var key in order) {
+                    if (order.hasOwnProperty(key)) {
+                        if (key === "subtotal" || key === "paid") {
+                            continue;
+                        }
+                        else if (key.indexOf("GC") === 0) {
+                            totalprice = order[key];
+                            //console.log(key);
+                            //console.log(items[key]);
+                            //console.log(items[key].lbPrice);
+
+                            subtotal = subtotal + totalprice;
+                            if (first) {
+                                $("#noitems").addClass("hidden");
+                                first = false;
+                            }
+
+
+                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>Gift Card - $" + totalprice + "</td>" +
+                                "<td id='item-" + key + "-qty'>1</td><td id='item-" + key + "-unitprice'>$" + totalprice + "</td>" +
+                                "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
+
+
+
+
+                        }
+                        else if (items[key] === null || items[key] === undefined) {
+                            console.log("Item " + key + " was ignored because it does not exist in the items object.");
+                            continue;
+                        }
+                        else if (key.indexOf("BLK") === 0) {
+                            var val = order[key];
+                            //console.log(key);
+                            //console.log(items[key]);
+                            //console.log(items[key].lbPrice);
+                            var lbPrice = items[key].lbPrice;
+                            qty = order[key];
+                            if (qty <= 0) {
+                                continue;
+                            }
+
+
+
+                            name = items[key].name;
+                            totalprice = roundTo(lbPrice * qty, 2);
+                            subtotal = subtotal + totalprice;
+                            if (first) {
+                                $("#noitems").addClass("hidden");
+                                first = false;
+                            }
+
+
+                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + " (" + qty + " Pound" + (qty === 1 ? "" : "s") + " @ $" + lbPrice + "/Pound)(<a onclick=\"editBlkItem('" + key + "', " + qty + ")\">edit</a>)</td>" +
+                                "<td id='item-" + key + "-qty'>1</td><td id='item-" + key + "-unitprice'>$" + totalprice + "</td>" +
+                                "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
+
+
+
+
+                        }
+
+                        else {
+                            qty = order[key];
+                            if (qty <= 0) {
+                                continue;
+                            }
+                            unitprice = items[key].price;
+
+
+                            name = items[key].name;
+                            totalprice = roundTo(unitprice * qty, 2);
+                            subtotal = subtotal + totalprice;
+                            if (first) {
+                                $("#noitems").addClass("hidden");
+                                first = false;
+                            }
+
+
+                            $("<tr id='item-" + key + "' class='item'><td id='item-" + key + "-name'>" + name + "(<a onclick=\"editItem('" + key + "', " + qty + ")\">edit</a>)</td>" +
+                                "<td id='item-" + key + "-qty'>" + qty + "</td><td id='item-" + key + "-unitprice'>$" + unitprice + "</td>" +
+                                "<td id='item-" + key + "-totalprice'>$" + totalprice + "</td></tr>").insertBefore("#noitems");
+
+
+                        }
+                    }
+                }
+                $("#subtotal").html(subtotal);
+                $("#total").html(subtotal);
+                if (order !== undefined && order !== null) {
+                    //console.log(order.paid);
+                    if (order.paid !== undefined && order.paid !== null) {
+                        $("#paid").html(order.paid);
+                        remaining = subtotal - order.paid;
+                    }
+                    else {
+                        remaining = 0.00;
+                    }
+                }
+                else {
+                    console.log(10);
+                }
+
+
+                $("#remaining").html(roundTo(remaining, 2));
+                return subtotal;
+            }
+
+            ref.ref("/").on("value", function (snapshot) {
+                //console.log(snapshot);
+                if (snapshot.val().order === null || snapshot.val().order === undefined) {
+                    return;
+                }
+                else {
+                    ref.ref("/order/subtotal").set(updateTable(snapshot.val().items, snapshot.val().order));
+                }
+            });
+
+            function editItem(id, qty) {
+                $("#edit-item-modal-id").val(id);
+                $("#edit-item-modal-val").val(qty);
+                $("#edit-item-modal").modal("show");
+                $("#edit-item-modal-btn").click(function () {
+                    var newQuantity = parseFloat($("#edit-item-modal-val").val());
+                    if (newQuantity >= 1) {
+
+                        ref.ref("/order/" + id).set(newQuantity);
+
+                    }
+                    else {
+
+                        ref.ref("/order/" + id).set(null);
+                    }
+
+                    $("#edit-item-modal").modal("hide");
+
+                });
+            }
+
+            function editBlkItem(id, qty) {
+                $("#blk-item-modal-id").val(id);
+                $("#blk-item-modal-val").val(qty);
+                $("#blk-item-modal").modal("show");
+                $("#blk-item-modal-btn").click(function () {
+                    var newQuantity = parseFloat($("#edit-item-modal-val").val());
+                    if (newQuantity > 0) {
+
+                        ref.ref("/order/" + id).set(newQuantity);
+
+                    }
+                    else {
+
+                        ref.ref("/order/" + id).set(null);
+                    }
+
+                    $("#edit-item-modal").modal("hide");
+
+                });
+            }
+            $("#add-item").keypress(function (e) {
+                if (e.which == 13) {
+                    var value = encodeURIComponent($("#add-item").val()); //A calid UID will not be un-rl safe, This is to prevent firebase errors.5
+                    if (value.indexOf("Delete%20next") > -1) {
+                        $("#add-item").val("D");
+                        $("#add-item").focus();
+                    }
+                    /*
+                    else if (value.indexOf("X2 Next") > -1) {
+                        $("#add-item").val("2X");
+                        $("#add-item").focus();
+                    }
+                    else if (value.indexOf("X3 Next") > -1) {
+                        $("#add-item").val("3X");
+                        $("#add-item").focus();
+                    }
+                    else if (value.indexOf("X4 Next") > -1) {
+                        $("#add-item").val("4X");
+                        $("#add-item").focus();
+                    }
+                    else if (value.indexOf("X5 Next") > -1) {
+                        $("#add-item").val("5X");
+                        $("#add-item").focus();
+                    }
+                    */
+                    else if (value === "Clear%20Formatters") {
+                        $("#add-item").val("");
+                        $("#add-item").focus();
+                    }
+                    else if (value === "Exact%20Change%20Paid") {
+                        ref.ref("/order/subtotal/").once("value").then(function (snapshot) {
+                            ref.ref("/order/paid/").set(snapshot.val());
+                        });
+                        $("#add-item").val("");
+                        $("#add-item").focus();
+                    }
+                    else if (value === "Reset%20POS") {
+                        $("#add-item").val("Reset POS");
+                        $("#add-item").focus();
+                    }
+                    else if (value === "Reset%20POSConfirm") {
+                        //RESET POS TODO
+                        ref.ref("/order/").remove();
+
+                        $("#add-item").val("");
+                        $("#add-item").focus();
+                    }
+                    else if (value.indexOf("D") === 0) {
+                        ref.ref("/order/" + value.substring(1)).transaction(function (snapshot) {
+                            if (snapshot > 1 && snapshot !== null && snapshot !== undefined) {
+                                $("#add-item").val("");
+                                $("#add-item").focus();
+                                return snapshot - 1;
+
+                            }
+                            else {
+                                $("#add-item").val("");
+                                $("#add-item").focus();
+                                return null;
+                            }
+
+
+                        });
+                    }
+                    else if (value.indexOf("BLK") === 0) {
+                        $("#blk-item-modal-id").val(value.substring(3));
+
+                        $("#blk-item-modal").modal("show");
+                        $("#blk-item-modal-btn").click(function () {
+                            ref.ref("/order/" + value).set(parseFloat($("#blk-item-modal-val").val()));
+                            $("#blk-item-modal").modal("hide");
+                        });
+
+
+                    }
+                    /*
+                    else if (value.indexOf("CPN") === 0) {
+                        ref.ref("/order/" + value.substring(1)).transaction(function(snapshot) {
+                            if (snapshot !== 1 && snapshot !== 1) {
+                                $("#add-item").val("");
+                                $("#add-item").focus();
+                                return snapshot - 1;
+
+                            }
+                            else {
+                                $("#add-item").val("");
+                                $("#add-item").focus();
+                                return null;
+                            }
+
+
+                        });
+                    }
+                    */
+
+                    else if (value.indexOf("GC") === 0) {
+                        $("#gift-card-modal").modal("show");
+                        $("#gift-card-modal-id").val(value.substring(2));
+                        $("#gift-card-modal-activate").click(function () {
+                            var val = $("#gift-card-modal-val").val();
+                            var id = value.substring(2);
+                            ref.ref("/gc/" + id).set(parseFloat(val));
+                            ref.ref("/order/GC" + id).set(parseFloat(val));
+                            $("#add-item").val("");
+                            $("#add-item").focus();
+                        });
+
+
+                    }
+                    else if (value.indexOf("MGC") === 0) {
+                        $("#gift-card-pay-modal-id").html(value.substring(3));
+                        ref.ref("/").once("value").then(function (snapshot) {
+                            if (snapshot.val().order.subtotal < 0) {
+                                return;
+                            }
+                            var remaing = snapshot.val().order.subtotal - (snapshot.val().order.paid !== null ? snapshot.val().order.paid : 0.00);
+                            var gcVal = snapshot.val().GC[value.substring(3)];
+                            var topay;
+                            if (gcVal >= remaing) {
+                                topay = remaing;
+                            }
+                            else {
+                                topay = gcVal;
+                            }
+                            $("#gift-card-pay-modal-val").html(topay);
+                            $("#gift-card-pay-modal-left").html(remaing - topay);
+                            $("#gift-card-pay-modal").modal("show");
+                            $("#gift-card-pay-modal-btn").click(function () {
+                                ref.ref("/GC/" + value.substring(3)).set(gcVal - topay);
+                            });
+                        });
+
+                    }
+                    else if (value.indexOf("M") === 0) {
+                        ref.ref("/order/paid/").transaction(function (snapshot) {
+                            return snapshot + roundTo(parseFloat(value.substring(1), 10), 2);
+                        });
+                        $("#add-item").val("");
+                        $("#add-item").focus();
+                    }
+                    /*else if (value.indexOf("X") > -1) {
+                         
+
+                        if (order[value] !== undefined && order[value] !== null) {
+                            order[value] = order[value] + 2;
+                        }
+                        else {
+                            order[value] = 2;
+                        }
+
+                        $("#add-item").val("");
+                        $("#add-item").focus();
+                        updateTable();
+                    }
+                    */
+                    else {
+                        //alert(value);
+                        ref.ref("/order/" + value).transaction(function (snapshot) {
+                            if (snapshot !== undefined && snapshot !== null) {
+                                $("#add-item").val("");
+                                $("#add-item").focus();
+                                updateTable();
+                                return snapshot + 1;
+                            }
+                            else {
+                                $("#add-item").val("");
+                                $("#add-item").focus();
+                                updateTable();
+                                return 1;
+                            }
+
+
+                        });
+
+                    }
+                }
+
+
+            }
+
+
+            );
+        </script>
+        <!-- Modal -->
+        <div class="modal fade" id="gift-card-modal" tabindex="-1" role="dialog" aria-labelledby="gift-card-modal-label">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="gift-card-modal-label">Add gift card</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label for="gift-card-modal-id">Gift card ID:</label>
+                        <input id="gift-card-modal-id" class="form-control disabled" disabled>
+                        <label for="gift-card-modal-val">Gift card Value:</label>
+                        <input id="gift-card-modal-val" class="form-control">
+                        <button id="gift-card-modal-activate" class="btn btn-primary form-control">Activate Gift Card</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="edit-item-modal" tabindex="-1" role="dialog" aria-labelledby="edit-item-modal-label">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="edit-item-modal-label">Manually Edit Item</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label for="edit-item-modal-id">Item ID:</label>
+                        <input id="edit-item-modal-id" class="form-control disabled" disabled>
+                        <label for="edit-item-modal-val">Quantity:</label>
+                        <input id="edit-item-modal-val" class="form-control">
+                        <button id="edit-item-modal-btn" class="btn btn-primary form-control">Update Item Quantity</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="blk-item-modal" tabindex="-1" role="dialog" aria-labelledby="blk-item-modal-label">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="blk-item-modal-label">Edit Bulk Item Info</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label for="blk-item-modal-id">Item ID:</label>
+                        <input id="blk-item-modal-id" class="form-control disabled" disabled>
+                        <label for="blk-item-modal-val">Weight(Pounds):</label>
+                        <input id="blk-item-modal-val" class="form-control">
+                        <button id="blk-item-modal-btn" class="btn btn-primary form-control">Add Item</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="gift-card-pay-modal" tabindex="-1" role="dialog" aria-labelledby="gift-card-pay-modal-label">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="gift-card-pay-modal-label">Confirm Gift Card Payment</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Use gift card
+                            <b id="gift-card-pay-modal-id">Loading...</b> to pay $
+                            <b id="gift-card-pay-modal-pay">Loading...</b> so that gift card will have $
+                            <b id="gift-card-pay-modal-left"></b> left?</p>
+                        <button id="gift-card-pay-modal-btn" class="btn btn-primary form-control">Pay</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>

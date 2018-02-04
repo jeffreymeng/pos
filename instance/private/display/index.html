@@ -110,6 +110,13 @@
         </script>
         <!-- Menu Toggle Script -->
         <script>
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    // Do nothing. The code below will not work unless it's signed in, so theres no need to put it in here.
+                } else {
+                    window.location.href = "/";
+                }
+            });
             $("#menu-toggle").click(function(e) {
                 e.preventDefault();
                 $("#wrapper").toggleClass("toggled");
@@ -124,7 +131,7 @@
             /*global $ firebase*/
 
             //http://stackoverflow.com/a/15762794/5511561
-            var ref = firebase.database();
+            var ref = firebase.database().ref("/private/");
 
             function roundTo(n, digits) {
                 if (digits === undefined) {

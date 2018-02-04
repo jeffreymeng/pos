@@ -44,6 +44,9 @@
                 <li>
                     <a href="/add/">Add Item</a>
                 </li>
+                <li>
+                    <a href="/docs/">Documentation</a>
+                </li>
 
             </ul>
         </div>
@@ -55,16 +58,9 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <a class="btn btn-default" id="menu-toggle">Toggle Menu</a>
-                        <h1>JPOS - Add new product</h1>
+                        <h1>JPOS - Documentation</h1>
                         <hr>
-                        <label for="barcode">Barcode:</label>
-                        <input class="form-control" id="barcode">
-                        <label for="price">Price:</label>
-                        <input class="form-control" id="price">
-                        <label for="name">Name:</label>
-                        <input class="form-control" id="name">
-                        <hr>
-                        <button id="submit" class="btn btn-primary form-control">Add Item</button>
+                        
                     </div>
                 </div>
             </div>
@@ -95,17 +91,7 @@
         <!-- Menu Toggle Script -->
         <script>
         /* global $ firebase */
-            $("#menu-toggle").click(function(e) {
-                e.preventDefault();
-                $("#wrapper").toggleClass("toggled");
-            });
-            $("#submit").click(function(){
-                firebase.database().ref("/items/" + $("#barcode").val()).set({
-                    name:$("#name").val(),
-                    price:parseFloat($("#price").val())
-                });
-                $("input.form-control").val("")
-            });
+            
 
             </script>
 </body>
