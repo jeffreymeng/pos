@@ -99,7 +99,7 @@
     <script>
         $("#submit").click(function () {
             $("#error").html("Loading...")
-            firebase.auth().signInWithEmailAndPassword(email, password).then(function(){
+            firebase.auth().signInWithEmailAndPassword($("#email").val(), $("#password").val()).then(function(){
                 window.location.href = "https://pos.jeffkmeng.com/instance/private/";
             }).catch(function (error) {
                 // Handle Errors here.
